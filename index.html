@@ -1,0 +1,399 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1.0">
+<title>Python Practice — IGCSE 0478 Ch.8 Programming</title>
+<link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;600;700;800&family=DM+Sans:ital,wght@0,300;0,400;0,500;1,400&display=swap" rel="stylesheet">
+<style>
+:root{--bg:#f8f9fb;--sf:#fff;--sf2:#f1f3f7;--sf3:#e8ecf2;--bd:#e2e6ed;--bd2:#c8cfd8;--tx:#111827;--mu:#6b7280;--mu2:#9ca3af;
+--ca1:#7c3aed;--ca2:#0891b2;--ok:#16a34a;--no:#dc2626;--r:12px;--nh:56px;--sbw:230px;
+--mono:"SF Mono","JetBrains Mono",Menlo,Consolas,monospace;}
+*{box-sizing:border-box;margin:0;padding:0}html{scroll-behavior:smooth}
+body{font-family:'DM Sans',-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;background:var(--bg);color:var(--tx);min-height:100vh;overflow-x:hidden}
+code{font-family:var(--mono);background:#f1f5f9;border:1px solid #e2e8f0;padding:2px 6px;border-radius:4px;font-size:.87em;color:#0f172a}
+strong{font-weight:600}
+
+/* ---------- NAV (vertical sidebar, desktop) ---------- */
+#nav{position:fixed;top:0;left:0;bottom:0;z-index:300;width:var(--sbw);background:rgba(255,255,255,.97);backdrop-filter:blur(12px);border-right:1px solid var(--bd);display:flex;flex-direction:column;align-items:stretch;padding:1.25rem 1rem;gap:.75rem;box-shadow:1px 0 3px rgba(0,0,0,.06);overflow-y:auto;overflow-x:hidden;transition:width .18s}
+.nav-top{display:flex;align-items:center;justify-content:space-between;gap:.4rem;flex-shrink:0}
+.nav-logo{font-family:'Syne',sans-serif;font-weight:800;font-size:1.05rem;color:var(--tx);white-space:nowrap;cursor:pointer;flex-shrink:0}
+.nav-logo span{color:var(--ca1)}
+.nav-toggle{flex-shrink:0;width:26px;height:26px;border-radius:7px;border:1px solid var(--bd);background:var(--sf);color:var(--mu);font-size:10px;cursor:pointer;display:flex;align-items:center;justify-content:center;transition:all .18s}
+.nav-toggle:hover{background:var(--sf2);color:var(--tx)}
+.nav-tabs{display:flex;flex-direction:column;gap:2px}
+.nav-tabs::-webkit-scrollbar{display:none}
+.ntab{font-family:'Syne',sans-serif;font-size:12.5px;font-weight:600;padding:9px 12px;border-radius:8px;border:none;background:transparent;color:var(--mu);cursor:pointer;text-align:left;line-height:1.3;transition:all .18s;flex-shrink:0;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.ntab:hover{color:var(--tx);background:var(--sf2)}
+.ntab.on{background:var(--c,var(--tx));color:#fff}
+.ns{flex:1}
+.nav-progress{font-family:'Syne',sans-serif;font-size:11px;font-weight:700;color:var(--mu);flex-shrink:0;padding-top:.75rem;border-top:1px solid var(--bd);text-align:center;white-space:nowrap}
+
+.nav-auth{flex-shrink:0;padding-top:.6rem}
+#auth-signed-out,#auth-signed-in{display:flex;align-items:center;gap:8px}
+#auth-signed-in{display:none}
+.btn-signin{width:100%;display:flex;align-items:center;justify-content:center;gap:8px;background:#4285f4;color:#fff;border:none;border-radius:8px;padding:8px 10px;font-family:'Syne',sans-serif;font-size:11.5px;font-weight:700;cursor:pointer;transition:opacity .15s;white-space:nowrap}
+.btn-signin:hover{opacity:.88}
+.auth-avatar{width:26px;height:26px;border-radius:50%;border:2px solid var(--sf3);flex-shrink:0;object-fit:cover}
+.auth-name{font-size:11.5px;font-weight:600;color:var(--tx);overflow:hidden;text-overflow:ellipsis;white-space:nowrap;flex:1;min-width:0}
+.btn-signout{font-size:11px;font-weight:700;color:var(--mu2);background:none;border:none;cursor:pointer;padding:2px 4px;flex-shrink:0;border-radius:4px}
+.btn-signout:hover{color:var(--no);background:var(--sf2)}
+
+.pg{display:none;padding-left:var(--sbw);min-height:100vh;transition:padding-left .18s}.pg.on{display:block}
+
+/* ---- Folded sidebar (desktop) ---- */
+body.nav-collapsed{--sbw:52px}
+body.nav-collapsed .nav-top{justify-content:center}
+body.nav-collapsed .nav-logo,
+body.nav-collapsed .nav-tabs,
+body.nav-collapsed .nav-progress,
+body.nav-collapsed .nav-auth{display:none}
+body.nav-collapsed .nav-toggle{transform:rotate(180deg)}
+
+@media(max-width:900px){
+  #nav{position:fixed;top:0;left:0;right:0;bottom:auto;width:auto !important;height:var(--nh);flex-direction:row;align-items:center;padding:0 1rem;gap:.5rem;border-right:none;border-bottom:1px solid var(--bd);overflow-y:visible;box-shadow:0 1px 3px rgba(0,0,0,.06)}
+  .nav-top{flex-shrink:0}
+  .nav-tabs{flex-direction:row;overflow-x:auto;gap:4px;scrollbar-width:none;flex:1}
+  .ntab{white-space:nowrap;padding:6px 13px;border-radius:100px}
+  .nav-progress{border-top:none;padding-top:0;padding-left:.5rem;text-align:right}
+  .nav-auth{padding-top:0;padding-left:.5rem}
+  .btn-signin{width:auto;padding:6px 10px}
+  .auth-name{max-width:80px}
+  .pg{padding-left:0 !important;padding-top:var(--nh)}
+  body.nav-collapsed .nav-top{justify-content:flex-start}
+  body.nav-collapsed .nav-logo{display:block}
+  body.nav-collapsed .nav-logo span{display:inline}
+  body.nav-collapsed .nav-auth{display:flex}
+}
+
+/* ---------- HOME ---------- */
+#ph{display:flex;flex-direction:column;align-items:center;justify-content:center;min-height:100vh;padding:5rem 1.5rem 3rem;text-align:center}
+.h-badge{font-family:'Syne',sans-serif;font-size:10px;font-weight:700;letter-spacing:.18em;text-transform:uppercase;color:var(--mu);background:var(--sf);border:1px solid var(--bd);padding:5px 14px;border-radius:100px;display:inline-block;margin-bottom:1.75rem}
+.h-title{font-family:'Syne',sans-serif;font-size:clamp(2.2rem,8vw,4.5rem);font-weight:800;line-height:1.05;margin-bottom:1rem}
+.h-title span{background:linear-gradient(120deg,var(--ca2),var(--ca1));-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text}
+.h-sub{font-size:1rem;color:var(--mu);line-height:1.72;margin-bottom:2rem;max-width:560px}
+.hcards{display:grid;grid-template-columns:repeat(5,1fr);gap:10px;margin-bottom:1.2rem;width:100%;max-width:900px}
+.hcard{background:var(--sf);border:1px solid var(--bd);border-radius:var(--r);padding:.9rem .7rem;cursor:pointer;transition:all .2s;text-align:left;border-top:3px solid var(--c,#888)}
+.hcard:hover{transform:translateY(-2px);box-shadow:0 4px 16px rgba(0,0,0,.08)}
+.hcard-ic{font-size:1.4rem;margin-bottom:.4rem}
+.hcard-label{font-family:'Syne',sans-serif;font-size:11px;font-weight:700;color:var(--tx)}
+.hcard-n{font-size:11px;font-weight:500;color:var(--mu);line-height:1.35;margin-top:.15rem}
+.hcard-check{float:right;color:var(--ok);font-weight:800;font-size:12px}
+.h-progress-wrap{width:100%;max-width:900px;margin-bottom:2rem}
+.h-progress-track{background:var(--sf3);border-radius:100px;height:8px;overflow:hidden;margin-bottom:.4rem}
+.h-progress-fill{height:8px;border-radius:100px;background:linear-gradient(90deg,var(--ca2),var(--ca1));transition:width .4s}
+.h-progress-text{font-size:12px;color:var(--mu);text-align:right}
+.hbtns{display:flex;gap:.75rem;flex-wrap:wrap;justify-content:center}
+.hbtn{font-family:'Syne',sans-serif;font-size:13px;font-weight:700;padding:10px 22px;border-radius:8px;border:none;cursor:pointer;transition:all .18s}
+.hbtn-p{background:var(--tx);color:#fff}.hbtn-p:hover{opacity:.85}
+.hbtn-s{background:var(--sf);color:var(--tx);border:1px solid var(--bd)}.hbtn-s:hover{background:var(--sf2)}
+
+/* ---------- MODULE PAGE SHELL ---------- */
+#pmod{padding:2rem 1.5rem 4rem;max-width:920px;margin:0 auto}
+@media(max-width:900px){#pmod{padding-top:calc(var(--nh) + 2rem)}}
+.back-btn{font-family:'Syne',sans-serif;font-size:.8rem;font-weight:700;padding:6px 14px;border-radius:100px;border:1px solid var(--bd);background:var(--sf);color:var(--mu);cursor:pointer;transition:all .18s;margin-bottom:1.5rem;display:inline-flex;align-items:center;gap:.4rem}
+.back-btn:hover{background:var(--sf2);color:var(--tx)}
+.badge{display:inline-block;font-family:'Syne',sans-serif;border-radius:999px;padding:4px 14px;font-size:11px;font-weight:700;margin-bottom:14px;border:1.5px solid var(--c,#888);color:var(--c,#888);background:color-mix(in srgb, var(--c,#888) 10%, transparent)}
+.step-indicator{font-family:'Syne',sans-serif;font-size:11px;font-weight:700;letter-spacing:.05em;text-transform:uppercase;color:var(--mu);margin-bottom:1.2rem}
+.mod-steps{display:flex;gap:6px;margin-bottom:1.8rem}
+.mod-step-pill{font-family:'Syne',sans-serif;font-size:11px;font-weight:700;padding:5px 12px;border-radius:100px;border:1.5px solid var(--bd);background:var(--sf);color:var(--mu2)}
+.mod-step-pill.on{border-color:var(--c,#888);background:var(--c,#888);color:#fff}
+.mod-step-pill.done{border-color:var(--ok);color:var(--ok)}
+
+/* ---------- LESSON (sg-*) ---------- */
+.sg-title{font-family:'Syne',sans-serif;font-size:2rem;font-weight:800;margin-bottom:.6rem}
+.sg-p{font-size:.93rem;line-height:1.78;margin-bottom:.8rem;color:#374151}
+.sg-h3{font-family:'Syne',sans-serif;font-size:1rem;font-weight:700;margin:1.4rem 0 .5rem;color:var(--tx)}
+
+/* ---------- TERMINAL-STYLE CODE BLOCKS (used for every sample/example/answer) ---------- */
+.term{border-radius:10px;overflow:hidden;border:1px solid #1e293b;margin:.9rem 0;box-shadow:0 2px 10px rgba(0,0,0,.08)}
+.term-bar{background:#1e293b;padding:7px 12px;display:flex;align-items:center;gap:6px}
+.term-dot{width:10px;height:10px;border-radius:50%;flex-shrink:0}
+.term-dot.r{background:#ef4444}.term-dot.y{background:#f59e0b}.term-dot.g{background:#22c55e}
+.term-label{margin-left:6px;font-family:var(--mono);font-size:11px;color:#94a3b8}
+.term-body{background:#0f172a;color:#e2e8f0;padding:.95rem 1.1rem;margin:0;font-family:var(--mono);font-size:12.5px;line-height:1.65;overflow-x:auto;white-space:pre-wrap;tab-size:4}
+.tok-kw{color:#c084fc;font-weight:600}
+.tok-bi{color:#38bdf8}
+.tok-str{color:#4ade80}
+.tok-num{color:#fbbf24}
+.tok-com{color:#64748b;font-style:italic}
+.sg-box{background:var(--sf);border-radius:var(--r);padding:1rem 1.2rem;margin:1.1rem 0;border-left:4px solid var(--c,#888)}
+.sg-box-title{font-family:'Syne',sans-serif;font-size:.75rem;font-weight:700;text-transform:uppercase;letter-spacing:.08em;color:var(--c,#888);margin-bottom:.5rem}
+.sg-box ul{padding-left:1.1rem;margin:0}
+.sg-box li{font-size:.9rem;line-height:1.7;color:#374151;margin-bottom:.3rem}
+.step-btn{margin-top:1.6rem;background:var(--tx);color:#fff;border:none;border-radius:10px;padding:14px 28px;font-size:15px;font-family:'Syne',sans-serif;font-weight:700;cursor:pointer;width:100%}
+.step-btn:hover{opacity:.85}
+
+/* ---------- QUIZ (q-*) ---------- */
+.q-progress{background:var(--sf3);border-radius:100px;height:6px;margin-bottom:1.2rem;overflow:hidden}
+.q-progress-fill{height:6px;border-radius:100px;background:var(--c,#888);transition:width .4s}
+#quizScore{font-family:'Syne',sans-serif;font-size:.78rem;font-weight:700;color:var(--mu);margin-bottom:1.2rem}
+.q-card{background:var(--sf);border:1px solid var(--bd);border-radius:var(--r);padding:1.5rem;margin-bottom:1rem;box-shadow:0 1px 4px rgba(0,0,0,.04)}
+.q-text{font-size:1rem;font-weight:500;margin-bottom:1.2rem;line-height:1.6}
+.q-opts{display:flex;flex-direction:column;gap:.6rem}
+.q-opt{padding:.75rem 1rem;border-radius:8px;border:2px solid var(--bd);background:var(--sf);cursor:pointer;font-size:.93rem;transition:all .18s;text-align:left;min-height:52px;display:flex;align-items:center;gap:.7rem;line-height:1.35;font-family:inherit;color:var(--tx);width:100%}
+.q-opt:hover{border-color:var(--c,#888);background:var(--sf2)}
+.q-opt.correct{border-color:var(--ok);background:#f0fdf4;color:#14532d}
+.q-opt.wrong{border-color:var(--no);background:#fef2f2;color:#7f1d1d}
+.q-let{flex:0 0 auto;width:1.6rem;height:1.6rem;border-radius:50%;background:var(--sf3);color:var(--mu);font-family:'Syne',sans-serif;font-weight:800;font-size:.75rem;display:flex;align-items:center;justify-content:center}
+.q-opt.correct .q-let{background:var(--ok);color:#fff}
+.q-opt.wrong .q-let{background:var(--no);color:#fff}
+.q-feedback{font-size:.86rem;padding:.75rem 1rem;border-radius:8px;margin-top:1rem;line-height:1.6;display:none}
+.q-feedback.show{display:block}
+.q-feedback.ok{background:#f0fdf4;border:1px solid #bbf7d0;color:#14532d}
+.q-feedback.no{background:#fef2f2;border:1px solid #fecaca;color:#7f1d1d}
+
+/* ---------- PRACTICE (exercises + code) ---------- */
+.exercise-tabs{display:flex;gap:8px;margin-bottom:1.2rem;flex-wrap:wrap}
+.exercise-tab{font-family:'Syne',sans-serif;background:var(--sf);color:var(--mu);border:1.5px solid var(--bd);border-radius:999px;padding:6px 14px;font-size:12px;font-weight:700;cursor:pointer;transition:all .18s}
+.exercise-tab.active{color:#fff;background:var(--c,#888);border-color:var(--c,#888)}
+.exercise-tab.solved::after{content:" \2713"}
+.practice-grid{display:grid;grid-template-columns:42% 58%;gap:1.4rem;align-items:start}
+#problem{background:var(--sf);border:1px solid var(--bd);border-radius:var(--r);padding:1.4rem 1.5rem}
+#problem h1{font-family:'Syne',sans-serif;font-size:1.3rem;margin:0 0 .8rem}
+#problem .desc{font-size:.9rem;line-height:1.72;color:#374151}
+#problem .desc ul{padding-left:1.2rem}
+#problem .desc li{margin-bottom:.35rem}
+#problem h3{font-family:'Syne',sans-serif;font-size:.72rem;text-transform:uppercase;letter-spacing:.06em;color:var(--mu);margin:1.3rem 0 .5rem}
+.inputs-note{font-size:11.5px;color:var(--mu);margin-top:.5rem;font-style:italic}
+
+#right{display:flex;flex-direction:column;min-height:520px;background:var(--sf);border:1px solid var(--bd);border-radius:var(--r);overflow:hidden}
+#editor{flex:1;min-height:220px}
+#toolbar{display:flex;align-items:center;gap:8px;flex-wrap:wrap;padding:10px 14px;background:var(--sf2);border-top:1px solid var(--bd);border-bottom:1px solid var(--bd)}
+button.run{font-family:'Syne',sans-serif;background:var(--c,var(--tx));color:#fff;border:none;border-radius:8px;padding:9px 18px;font-size:13px;font-weight:700;cursor:pointer}
+button.run:hover{opacity:.85}
+button.run:disabled{opacity:.4;cursor:not-allowed}
+button.reset,button.ghost{font-family:'Syne',sans-serif;background:var(--sf);color:var(--mu);border:1px solid var(--bd);border-radius:8px;padding:9px 13px;font-size:13px;font-weight:700;cursor:pointer}
+button.reset:hover,button.ghost:hover{color:var(--tx);border-color:var(--bd2)}
+button.ghost:disabled{opacity:.4;cursor:not-allowed}
+#status{margin-left:auto;font-size:12px;color:var(--mu)}
+#results{max-height:260px;overflow-y:auto;background:var(--sf);padding:14px 16px;font-family:var(--mono);font-size:12.5px;line-height:1.55}
+.solution-block,.hint-block{border-radius:8px;padding:12px 14px;margin-bottom:10px;white-space:pre-wrap;line-height:1.5;font-family:'DM Sans',sans-serif}
+.hint-block{background:#fffbeb;border:1px solid #fde68a;color:#78350f}
+.solution-block{background:#eff6ff;border:1px solid #bfdbfe;color:#1e3a8a;padding-bottom:0}
+.solution-block .title,.hint-block .title{font-family:'Syne',sans-serif;font-weight:700;margin-bottom:6px;display:block;font-size:.78rem;text-transform:uppercase;letter-spacing:.04em}
+.solution-block .term{margin:0 -14px -1px;border-radius:0 0 7px 7px;border-left:none;border-right:none;border-bottom:none}
+.test-row{display:flex;align-items:flex-start;gap:10px;padding:6px 0;border-bottom:1px solid var(--sf3)}
+.test-row .icon{flex-shrink:0;font-weight:700}
+.pass .icon{color:var(--ok)}.fail .icon{color:var(--no)}
+.test-row .detail{color:var(--mu);white-space:pre-wrap}
+.summary{font-family:'Syne',sans-serif;font-weight:700;margin-bottom:8px}
+.summary.ok{color:var(--ok)}.summary.no{color:#b45309}
+.stderr{color:var(--no);white-space:pre-wrap}
+.stdout{color:#374151;white-space:pre-wrap}
+
+#confetti{position:fixed;inset:0;width:100%;height:100%;pointer-events:none;z-index:9999}
+
+@media(max-width:800px){.practice-grid{grid-template-columns:1fr}.hcards{grid-template-columns:repeat(3,1fr)}.h-title{font-size:2.2rem}}
+@media(max-width:520px){.hcards{grid-template-columns:repeat(2,1fr)}}
+</style>
+</head>
+<body>
+
+<nav id="nav">
+  <div class="nav-top">
+    <div class="nav-logo" onclick="showHome()">Py <span>Practice</span></div>
+    <button class="nav-toggle" id="navToggle" aria-label="Toggle menu" title="Fold/unfold menu">&#9664;</button>
+  </div>
+  <div class="nav-tabs" id="navTabs"></div>
+  <div class="ns"></div>
+  <div class="nav-progress" id="navProgress">0 / 20 solved</div>
+  <div class="nav-auth" id="navAuth">
+    <div id="auth-signed-out">
+      <button class="btn-signin" onclick="if(window.fbSignIn){fbSignIn()}else{alert('Cloud sign-in unavailable — check your connection.')}">
+        <svg width="14" height="14" viewBox="0 0 24 24"><path fill="#fff" d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z"/><path fill="#fff" d="M12 23c2.97 0 5.46-.98 7.28-2.66l-3.57-2.77c-.98.66-2.23 1.06-3.71 1.06-2.86 0-5.29-1.93-6.16-4.53H2.18v2.84C3.99 20.53 7.7 23 12 23z"/><path fill="#fff" d="M5.84 14.09c-.22-.66-.35-1.36-.35-2.09s.13-1.43.35-2.09V7.07H2.18C1.43 8.55 1 10.22 1 12s.43 3.45 1.18 4.93l3.66-2.84z"/><path fill="#fff" d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.07l3.66 2.84c.87-2.6 3.3-4.53 6.16-4.53z"/></svg>
+        Sign in with Google
+      </button>
+    </div>
+    <div id="auth-signed-in">
+      <img class="auth-avatar" id="auth-avatar" src="" alt="">
+      <span class="auth-name" id="auth-name"></span>
+      <button class="btn-signout" onclick="fbSignOut()" title="Sign out">&#10005;</button>
+    </div>
+  </div>
+</nav>
+
+<!-- HOME -->
+<div class="pg on" id="page-home">
+  <div id="ph">
+    <div class="h-badge">IGCSE 0478 &nbsp;&middot;&nbsp; Chapter 8 &nbsp;&middot;&nbsp; Programming</div>
+    <h1 class="h-title">Learn Python<br><span>by Writing It</span></h1>
+    <p class="h-sub">13 modules covering everything in Chapter 8 — variables through file handling — plus designing your own functions and an intro to Object-Oriented Programming. Each one has a short lesson, a quiz, and real Python exercises you run and get graded in your browser, with hints and model answers when you're stuck.</p>
+    <div class="h-progress-wrap">
+      <div class="h-progress-track"><div class="h-progress-fill" id="homeProgressFill"></div></div>
+      <div class="h-progress-text" id="homeProgressText">0 / 20 exercises solved</div>
+    </div>
+    <div class="hcards" id="homeCards"></div>
+    <div class="hbtns">
+      <button class="hbtn hbtn-p" id="homeStartBtn">&#9654; Continue where you left off</button>
+    </div>
+  </div>
+</div>
+
+<!-- MODULE PAGE -->
+<div class="pg" id="page-mod">
+  <div id="pmod">
+    <button class="back-btn" onclick="showHome()">&larr; All modules</button>
+
+    <div class="mod-steps" id="modSteps"></div>
+
+    <!-- STEP 1: Lesson -->
+    <section id="lesson">
+      <span class="badge" id="lBadge">Module</span>
+      <div class="step-indicator">Step 1 of 3 &middot; Learn the concept</div>
+      <h1 class="sg-title" id="lTitle">Loading&hellip;</h1>
+      <div id="lConcept"></div>
+      <h3 class="sg-h3">Example</h3>
+      <div class="term">
+        <div class="term-bar"><span class="term-dot r"></span><span class="term-dot y"></span><span class="term-dot g"></span><span class="term-label">example.py</span></div>
+        <pre class="term-body" id="lExample"></pre>
+      </div>
+      <div class="sg-box" id="lPointsBox">
+        <div class="sg-box-title">Key points</div>
+        <ul id="lessonPoints"></ul>
+      </div>
+      <button class="step-btn" id="goToQuiz">Continue to Quiz &rarr;</button>
+    </section>
+
+    <!-- STEP 2: Quiz -->
+    <section id="quiz" style="display:none;">
+      <span class="badge" id="qBadge">Module</span>
+      <div class="step-indicator">Step 2 of 3 &middot; Check your understanding</div>
+      <h1 class="sg-title" id="qTitle"></h1>
+      <div id="quizScore"></div>
+      <div id="quizQuestions"></div>
+      <button class="step-btn" id="goToPractice">Continue to Practice &rarr;</button>
+    </section>
+
+    <!-- STEP 3: Practice -->
+    <section id="main" style="display:none;">
+      <span class="badge" id="pBadge">Module</span>
+      <div class="step-indicator">Step 3 of 3 &middot; Write and run real Python</div>
+      <div class="exercise-tabs" id="exerciseTabs"></div>
+      <div class="practice-grid">
+        <div id="problem">
+          <h1 id="pTitle"></h1>
+          <div class="desc" id="pDesc"></div>
+          <div class="inputs-note" id="pInputsNote"></div>
+          <h3>Starter</h3>
+          <div class="term">
+            <div class="term-bar"><span class="term-dot r"></span><span class="term-dot y"></span><span class="term-dot g"></span><span class="term-label">starter.py</span></div>
+            <pre class="term-body" id="pStarter"></pre>
+          </div>
+        </div>
+        <div id="right">
+          <div id="editor"></div>
+          <div id="toolbar">
+            <button class="run" id="runBtn" disabled>&#9654; Run &amp; Grade</button>
+            <button class="ghost" id="runOnlyBtn" title="Run without grading">Run</button>
+            <button class="ghost" id="hintBtn">&#128161; Hint</button>
+            <button class="ghost" id="solutionBtn">Show Answer</button>
+            <button class="reset" id="resetBtn">Reset</button>
+            <span id="status">Loading Python runtime&hellip;</span>
+          </div>
+          <div id="results">
+            <div class="stdout">Test results will appear here after you run your code.</div>
+          </div>
+        </div>
+      </div>
+    </section>
+  </div>
+</div>
+
+<canvas id="confetti"></canvas>
+
+<!-- Pyodide first; Monaco's AMD loader is injected later by app.js so its
+     global `define`/`require` never clashes with Pyodide's UMD bundle. -->
+<script src="https://cdn.jsdelivr.net/pyodide/v0.25.1/full/pyodide.js"></script>
+<script src="content.js"></script>
+<script src="app.js"></script>
+
+<!-- Google sign-in + cloud progress sync (Firebase). Optional: if this fails
+     to load (offline, blocked script, etc.) the app still works fully off
+     localStorage, just without cross-device sync. -->
+<script type="module">
+import { initializeApp } from 'https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js';
+import { getAuth, GoogleAuthProvider, signInWithPopup, signOut, onAuthStateChanged }
+  from 'https://www.gstatic.com/firebasejs/10.12.0/firebase-auth.js';
+import { getFirestore, doc, getDoc, setDoc, serverTimestamp }
+  from 'https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js';
+
+// Reuses the same Firebase project as the Pseudocode IDE (Google sign-in +
+// Firestore already enabled there) under its own collection, so no new
+// Firebase project setup is needed.
+const firebaseConfig = {
+  apiKey:            "AIzaSyAKlKKCeF4tWATnWDAWXID7I7B4ECp6zyI",
+  authDomain:        "pseudocode-notebook.firebaseapp.com",
+  projectId:         "pseudocode-notebook",
+  storageBucket:     "pseudocode-notebook.firebasestorage.app",
+  messagingSenderId: "852117846947",
+  appId:             "1:852117846947:web:f56796bfca047ed0c5b816"
+};
+const PROGRESS_COLLECTION = "python_practice_progress";
+
+const app  = initializeApp(firebaseConfig);
+const auth = getAuth(app);
+const db   = getFirestore(app);
+
+window._fbUser = null;
+
+onAuthStateChanged(auth, async (user) => {
+  window._fbUser = user;
+  updateAuthUI(user);
+  if (!user) return;
+  try {
+    const snap = await getDoc(doc(db, PROGRESS_COLLECTION, user.uid));
+    if (snap.exists() && window._applyCloudProgress) window._applyCloudProgress(snap.data());
+    // push the merged (or first-ever) local state back up right away
+    if (window._fbSyncProgress && window._collectLocalProgress) {
+      window._fbSyncProgress(window._collectLocalProgress());
+    }
+  } catch (e) {
+    console.error("Cloud progress load failed", e);
+  }
+});
+
+window.fbSignIn = async () => {
+  try {
+    await signInWithPopup(auth, new GoogleAuthProvider());
+  } catch (e) {
+    alert("Sign-in failed: " + e.message);
+  }
+};
+
+window.fbSignOut = async () => {
+  if (!confirm("Sign out? Your progress on this device stays saved, but will stop syncing to your account.")) return;
+  await signOut(auth);
+  window._fbUser = null;
+  updateAuthUI(null);
+};
+
+window._fbSyncProgress = async (data) => {
+  const user = window._fbUser;
+  if (!user || !data) return;
+  try {
+    await setDoc(doc(db, PROGRESS_COLLECTION, user.uid), { ...data, updatedAt: serverTimestamp() });
+  } catch (e) {
+    console.error("Cloud sync failed", e);
+  }
+};
+
+function updateAuthUI(user) {
+  const signedOut = document.getElementById("auth-signed-out");
+  const signedIn = document.getElementById("auth-signed-in");
+  const avatar = document.getElementById("auth-avatar");
+  const name = document.getElementById("auth-name");
+  if (!signedOut || !signedIn) return;
+  if (user) {
+    signedOut.style.display = "none";
+    signedIn.style.display = "flex";
+    if (avatar) avatar.src = user.photoURL || "";
+    if (name) name.textContent = user.displayName || user.email;
+  } else {
+    signedOut.style.display = "flex";
+    signedIn.style.display = "none";
+  }
+}
+</script>
+</body>
+</html>
