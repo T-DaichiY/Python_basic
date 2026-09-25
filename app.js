@@ -236,6 +236,7 @@ function renderHomeCards() {
       <div class="hcard-ic">${m.icon}</div>
       <div class="hcard-label">${i + 1}. ${m.title}</div>
       <div class="hcard-n" id="hcard-n-${m.id}"></div>
+      <div class="hcard-progress"><div class="hcard-progress-fill" id="hcard-fill-${m.id}"></div></div>
     `;
     wrap.appendChild(card);
   });
@@ -244,9 +245,12 @@ function renderHomeCards() {
 function refreshHomeCards() {
   modules().forEach((m) => {
     const el = $(`hcard-n-${m.id}`);
-    if (!el) return;
+    const fill = $(`hcard-fill-${m.id}`);
+    if (!el || !fill) return;
     const n = solvedCountIn(m);
     el.textContent = `${n} / ${m.exercises.length} solved`;
+    const pct = m.exercises.length ? (n / m.exercises.length) * 100 : 0;
+    fill.style.width = pct + "%";
   });
 }
 
