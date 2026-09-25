@@ -435,8 +435,14 @@ function applyQuizAnswer(qCard, mcq, chosenIndex) {
 function updateQuizScore(m) {
   const saved = getQuizAnswers()[m.id] || {};
   let correct = 0;
-  m.mcqs.forEach((mcq, i) => { if (saved[i] === mcq.correct) correct++; });
+  let answered = 0;
+  m.mcqs.forEach((mcq, i) => {
+    if (saved[i] !== undefined) answered++;
+    if (saved[i] === mcq.correct) correct++;
+  });
   $("quizScore").textContent = `Score: ${correct} / ${m.mcqs.length}`;
+  const pct = m.mcqs.length ? (answered / m.mcqs.length) * 100 : 0;
+  $("quizProgressFill").style.width = pct + "%";
 }
 
 // ---- Exercise tabs ----
